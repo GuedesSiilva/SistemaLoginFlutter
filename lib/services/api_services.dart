@@ -23,7 +23,7 @@ class ApiServices {
         resposta = jsonDecode(utf8.decode(response.bodyBytes));
       }
 
-      if (response.statusCode >= 260 && response.statusCode < 300) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         return {'sucesso': true, 'dados': resposta};
       }
 
