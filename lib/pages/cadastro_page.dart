@@ -14,8 +14,7 @@ class _CadastroPageState extends State<CadastroPage> {
   final TextEditingController nomeController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController senhaController = TextEditingController();
-  final TextEditingController confirmarSenhaController =
-      TextEditingController();
+  final TextEditingController confirmarSenhaController = TextEditingController();
   bool esconderSenha = false;
   bool esconderConfirmacao = false;
 
@@ -39,7 +38,7 @@ class _CadastroPageState extends State<CadastroPage> {
 
     if (senha.length < 4) {
       mostrarMensagem(
-        "A senha é muito curta, digite uma senha com mais de 4 caracteres",
+        "A senha é muito curta, digite uma senha com até 4 caracteres",
       );
       return;
     }
@@ -54,7 +53,7 @@ class _CadastroPageState extends State<CadastroPage> {
     for (var usuario in usuarios) {
       if (usuario['email'] == email) {
         emailExiste = true;
-        return;
+        break;
       }
     }
 
@@ -65,6 +64,7 @@ class _CadastroPageState extends State<CadastroPage> {
 
     usuarios.add({"nome": nome, "email": email, "senha": senha});
     mostrarMensagem("Usuário Cadastrado com sucesso");
+    Navigator.pop(context);
   }
 
   void mostrarMensagem(String mensagem) {
