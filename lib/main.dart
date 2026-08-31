@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/pages/login_page.dart';
+import 'pages/login_page.dart';
 
-void main(){
+void main() {
   runApp(const MeuApp());
 }
+
 
 class MeuApp extends StatelessWidget{
   const MeuApp({super.key});
@@ -12,12 +13,12 @@ class MeuApp extends StatelessWidget{
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "Sistema de Login",
+      title: 'Sistema de Login',
       theme: ThemeData(
         colorSchemeSeed: Colors.blue,
         useMaterial3: true
       ),
       home: const LoginPage(),
     );
-  }
+  }  
 }

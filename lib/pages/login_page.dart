@@ -19,6 +19,7 @@ class _LoginPageState extends State<LoginPage>{
   bool esconderSenha = true;
   bool carregando = false;
 
+
   void mostrarMensagem(String mensagem){
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -30,6 +31,8 @@ class _LoginPageState extends State<LoginPage>{
   Future<void> entrar() async{
     String email = emailController.text.trim();
     String senha = senhaController.text;
+
+
 
     if(email.isEmpty || senha.isEmpty){
       mostrarMensagem(
@@ -44,49 +47,95 @@ class _LoginPageState extends State<LoginPage>{
     //    if (
     //     usuario['email'] == email && 
     //     usuario['senha'] == senha
-    //    ){
-    //     usuarioEncotrado = usuario;
+    //    ){       
+    //     usuarioEncotrado = usuario;        
     //     break;
     //    }
     // }
+    
+    
+    // setState(() {
+    //   carregando = true;
+    // });
 
+    // final resultado = await ApiService.login(
+    //   email: email, 
+    //   senha: senha
+    // );
 
+    // setState(() {
+    //   carregando = false;
+    // });
+
+    // if(resultado['sucesso'] == true){
+
+    //     final usuario = resultado['dados'];
+
+    //     String nome = usuario['nome'] ?? 'Usuario';
+    //     String emailUsuario = usuario['email'] ?? email;
+              
+
+    //     Navigator.pushReplacement(
+    //       context, 
+    //       MaterialPageRoute(
+    //         builder: (context) => HomePage(
+    //           nomeUsuario: nome,
+    //           emailUsuario: email,
+    //         ),
+    //       ),
+    //     );
+    // }
     setState(() {
-      carregando=true;
-      
+      carregando = true;
     });
 
-    final resultado = await ApiServices.login(email: email, senha: senha);
-
-    setState(() {
-      carregando=false;
-      
-    });
-
-    if(resultado['sucesso'] == true){
-      // final dados = resultado['dados'];
-      final usuario = resultado['dados'] as Map<String,dynamic>;
-
-      String nome = usuario['nome']?? "Usuario";
-      String emailusuario = usuario['email']?? email;
-
-       Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => HomePage(
-          nomeUsuario: nome,
-          emailusuario: emailusuario
-        ),
-      ),
+    final resultado = await ApiService.login(
+      email: email,
+      senha: senha,
     );
-    }
 
-    if(resultado['sucesso'] == false){
-      mostrarMensagem(
-      'Email ou senha incorretos.'
+    setState(() {
+      carregando = false;
+    });
+
+    if (resultado['sucesso'] == true) {
+      final dados = resultado['dados'];
+      final usuario = dados['usuario'];
+
+      if (usuario == null || usuario is! Map<String, dynamic>) {
+        mostrarMensagem('Dados do usuário inválidos.');
+        return;
+      }
+
+      final String nome = usuario['nome'] ?? 'Usuario';
+      final String emailUsuario = usuario['email'] ?? email;
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(
+            nomeUsuario: nome,
+            emailusuario: emailUsuario,
+          ),
+        ),
       );
+
       return;
     }
+
+    mostrarMensagem(
+      resultado['mensagem'] ?? 'E-mail ou senha incorretos.',
+    );
+
+    // if(resultado['sucesso'] == false){
+    //   mostrarMensagem(
+    //     'E-mail ou senha incorretos.'
+    //   );
+    //   return;
+    // }
+
+    
+
   }
 
   void abrirCadastro(){
@@ -94,6 +143,14 @@ class _LoginPageState extends State<LoginPage>{
       context,
       MaterialPageRoute(builder: (context) => const CadastroPage()),
     );
+  }
+
+  @override
+  void dispose(){
+    emailController.dispose();
+    senhaController.dispose();
+
+    super.dispose();
   }
    
   @override
@@ -110,6 +167,7 @@ class _LoginPageState extends State<LoginPage>{
           children: [
             const SizedBox(height: 40,),
 
+            
             const Icon(
               Icons.account_circle,
               size: 100,
@@ -174,7 +232,7 @@ class _LoginPageState extends State<LoginPage>{
 
             ElevatedButton.icon(
               onPressed: entrar, 
-              icon: carregando ? const CircularProgressIndicator() : const Icon(Icons.login),
+              icon: carregando ? const CircularProgressIndicator() :const Icon(Icons.login),
               label: const Text('Entrar')
             ),
 
