@@ -1,7 +1,5 @@
-import '../dados_mock.dart';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_application_1/services/api_services.dart';
 
 class CadastroPage extends StatefulWidget {
   const CadastroPage({super.key});
@@ -18,7 +16,7 @@ class _CadastroPageState extends State<CadastroPage> {
   bool esconderSenha = false;
   bool esconderConfirmacao = false;
 
-  void cadastrar() {
+  Future<void> cadastrar() async {
     String nome = nomeController.text.trim();
     String email = emailController.text.trim();
     String senha = senhaController.text;
@@ -48,23 +46,19 @@ class _CadastroPageState extends State<CadastroPage> {
       return;
     }
 
-    bool emailExiste = false;
+    final resultado = await ApiService.cadastrar(
+      nome: nome,
+      email: email,
+      senha: senha,
+    );
 
-    for (var usuario in usuarios) {
-      if (usuario['email'] == email) {
-        emailExiste = true;
-        break;
-      }
-    }
-
-    if (emailExiste) {
-      mostrarMensagem("Já existe um usuário com esse e-mail");
+    if (resultado['sucesso'] == true) {
+      mostrarMensagem(resultado['mensagem'] ?? "Usuário Cadastrado com sucesso");
+      Navigator.pop(context);
       return;
     }
 
-    usuarios.add({"nome": nome, "email": email, "senha": senha});
-    mostrarMensagem("Usuário Cadastrado com sucesso");
-    Navigator.pop(context);
+    mostrarMensagem(resultado['mensagem'] ?? "Erro ao cadastrar usuário");
   }
 
   void mostrarMensagem(String mensagem) {

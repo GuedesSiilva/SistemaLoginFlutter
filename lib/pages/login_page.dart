@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/home_page.dart';
 import 'package:flutter_application_1/services/api_services.dart';
-import '../dados_mock.dart';
 import 'cadastro_page.dart';
 
 class LoginPage extends StatefulWidget{

@@ -9,7 +9,67 @@ class ApiService {
   // static const String baseUrl = 'http://10.106.75.47:3000';
 
   static const String baseUrl = 'http://localhost:3000';
-  
+
+  static Future<Map<String, dynamic>> cadastrar({
+    required String nome,
+    required String email,
+    required String senha,
+  }) async {
+    try {
+      final endpoints = ['cadastro', 'usuarios'];
+      Map<String, dynamic> resposta = {};
+
+      for (final endpoint in endpoints) {
+        final url = Uri.parse('$baseUrl/$endpoint');
+
+        final response = await http.post(
+          url,
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: jsonEncode({
+            'nome': nome.trim(),
+            'email': email.trim(),
+            'senha': senha,
+          }),
+        );
+
+        if (response.body.isNotEmpty) {
+          try {
+            resposta = jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+          } catch (_) {
+            resposta = {};
+          }
+        }
+
+        if (response.statusCode >= 200 && response.statusCode < 300) {
+          return {
+            'sucesso': true,
+            'dados': resposta,
+            'mensagem': resposta['mensagem'] ?? 'Usuário cadastrado com sucesso.',
+          };
+        }
+
+        if (response.statusCode != 404) {
+          return {
+            'sucesso': false,
+            'mensagem': resposta['mensagem'] ?? 'Não foi possível cadastrar o usuário.',
+          };
+        }
+      }
+
+      return {
+        'sucesso': false,
+        'mensagem': 'Endpoint de cadastro não encontrado no servidor.',
+      };
+    } catch (erro) {
+      return {
+        'sucesso': false,
+        'mensagem': 'Não foi possível conectar ao servidor.',
+      };
+    }
+  }
 
   static Future<Map<String, dynamic>> login({
     required String email,
